@@ -3,8 +3,8 @@ project "libogg"
 	language "C"
 	staticruntime "on"
 
-	targetdir ("%{wks.location}/build/bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("%{wks.location}/build/bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	includedirs
 	{

@@ -4,8 +4,8 @@ project "OpenAL-Soft"
 	cppdialect "C++14"
 	staticruntime "on"
 
-    targetdir ("%{wks.location}/build/bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("%{wks.location}/build/bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	includedirs
 	{

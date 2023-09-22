@@ -1,5 +1,8 @@
+include "dependencies.lua"
+
 workspace "HezAudio"
     architecture "x64"
+    startproject "HezAudio-Demo"
 
     configurations
     {
@@ -22,4 +25,8 @@ group ""
 
 group "Core"
     include "HezAudio"
+group ""
+
+group "Demo"
+    include "HezAudio-Demo"
 group ""

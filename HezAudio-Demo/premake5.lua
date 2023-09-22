@@ -1,5 +1,5 @@
-project "HezAudio"
-    kind "StaticLib"
+project "HezAudio-Demo"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "on"
@@ -13,27 +13,14 @@ project "HezAudio"
         "src/**.cpp"
     }
 
-    defines
-    {
-        "_CRT_SECURE_NO_WARNINGS",
-		"AL_LIBTYPE_STATIC"
-    }
-
     includedirs
     {
-        "src",
-        "%{IncludeDir.OpenALSoft}",
-        "%{IncludeDir.OpenALSoftSrc}",
-        "%{IncludeDir.OpenALSoftCommon}",
-        "%{IncludeDir.libogg}",
-        "%{IncludeDir.Vorbis}",
-        "%{IncludeDir.minimp3}"
+        "HezAudio/src",
     }
 
     links
     {
-        "OpenAL-Soft",
-        "Vorbis"
+        "HezAudio"
     }
 
     warnings "Extra"
