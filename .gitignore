@@ -1,0 +1,27 @@
+# Binaries
+
+build/
+**/bin/
+bin-int/
+Intermediates/
+
+
+
+# Visual Studio files and folder
+
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+### Known bug from VS2022 < 17.4.5
+JSON/
+
+
+
+# Cleaning dependencies
+CMake/
+[Dd]oc/
+[Dd]ocs/
+[Ee]xample/
+[Ee]xamples/
