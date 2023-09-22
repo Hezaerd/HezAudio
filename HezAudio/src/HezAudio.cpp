@@ -22,6 +22,14 @@
 constexpr const unsigned int KILOBITS = 1024;
 constexpr const unsigned int MEGABITS = 1024 * KILOBITS;
 
+#ifdef HEZ_DEBUG
+bool sDebug = true;
+#else
+bool sDebug = false;
+#endif
+
+#define HEZ_LOG(x) std::cout << "[HezAudio] " << x << std::endl
+
 namespace Hez
 {
 	static ALCdevice* sDevice = nullptr;
@@ -75,15 +83,15 @@ namespace Hez
 
 		uint64_t samples = ov_pcm_total(&vorbisFile, -1);
 		float trackDuration = static_cast<float>(samples) / static_cast<float>(sampleRate);
-		uint32_t bufferSize = static_cast<uint32_t>(samples) * channels * sizeof(short); // How much bites per sample ??
+		uint32_t bufferSize = static_cast<unsigned long long>(static_cast<uint32_t>(samples)) * channels * sizeof(short); // How much bites per sample ??
 
-#ifdef HEZ_DEBUG
-		std::cout << "[HezAudio] - File info " << pFilename << ":";
-		std::cout << " Channels: " << channels;
-		std::cout << " Sample rate: " << sampleRate;
-		std::cout << " Duration: " << trackDuration << " seconds";
-		std::cout << " Excepted buffer size: " << bufferSize << " bytes\n";
-#endif
+		if (sDebug)
+		{
+			HEZ_LOG("File info - " << pFilename << ":");
+			HEZ_LOG(" Channels: " << channels);
+			HEZ_LOG(" Sample rate: " << sampleRate);
+			HEZ_LOG(" Excepted Size" << bufferSize);
+		}
 
 		if (sAudioScratchBufferSize < bufferSize)
 		{
@@ -116,9 +124,8 @@ namespace Hez
 
 		uint32_t size = bufferPtr - oggBuffer;
 
-#ifdef HEZ_DEBUG
-		std::cout << "[HezAudio] - Actual buffer size: " << size << " bytes\n";
-#endif
+		if (sDebug)
+			std::cout << "[HezAudio] - Actual buffer size: " << size << " bytes\n";
 
 		ov_clear(&vorbisFile);
 		fclose(file);
@@ -130,6 +137,42 @@ namespace Hez
 		AudioSource	result = { buffer, true, trackDuration };
 		alGenSources(1, &result.mSourceHandle);
 		alSourcei(result.mSourceHandle, AL_BUFFER, buffer);
+
+		return result;
+	}
+
+	AudioSource Audio::LoadAudioSourceMp3(const std::string& pFilename)
+	{
+		mp3dec_file_info_t fileInfo = {};
+		int loadResult = mp3dec_load(&sMp3Decoder, pFilename.c_str(), &fileInfo, nullptr, nullptr);
+		uint32_t size = fileInfo.samples * sizeof(mp3d_sample_t);
+
+		auto sampleRate = fileInfo.hz;
+		auto channels = fileInfo.channels;
+		auto alFormat = GetOpenALFormat(channels);
+		float trackDuration = size / (fileInfo.avg_bitrate_kbps * KILOBITS);
+
+		ALuint buffer;
+		alGenBuffers(1, &buffer);
+		alBufferData(buffer, alFormat, fileInfo.buffer, size, sampleRate);
+
+		AudioSource	result = { buffer, true, trackDuration };
+		alGenSources(1, &result.mSourceHandle);
+		alSourcei(result.mSourceHandle, AL_BUFFER, buffer);
+
+		if (sDebug)
+		{
+			HEZ_LOG("File Info -" << pFilename << ":");
+			HEZ_LOG(" Channels: " << channels);
+			HEZ_LOG(" Sample Rate: " << sampleRate);
+			HEZ_LOG(" Size: " << size << " bytes");
+
+			auto [mins, secs] = result.GetLengthMinutesAndSeconds();
+			HEZ_LOG(" Length: " << mins << "m" << secs << "s");
+		}
+
+		if (alGetError() != AL_NO_ERROR)
+			std::cout << "Failed to setup sound source" << std::endl;
 
 		return result;
 	}
