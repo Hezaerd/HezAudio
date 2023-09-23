@@ -1,8 +1,8 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Setup Premake
+run-name: Building project using Premake 🚀
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Setup-Premake:
     runs-on: ubuntu-latest
     steps:
       - uses: abel0b/setup-premake@v2.3
