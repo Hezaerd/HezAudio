@@ -6,29 +6,29 @@
 int main()
 {
 	// Init the audio engine
-	Hez::Audio::Init(true);
+	Hez::Audio::Audio::Init(true);
 
 	// Load an audio source
-	auto source = Hez::AudioSource::LoadFromFile("Assets/Cosmic-Cove-Music.mp3", false);
+	auto source = Hez::Audio::AudioSource::LoadFromFile("Assets/Cosmic-Cove-Music.mp3", false);
 	// Make it loop forever
 	source.SetLooping(true);
 	// Reduce the volume
 	source.SetVolume(1.f);
 	// Play the audio source
-	Hez::Audio::Play(source);
+	Hez::Audio::Audio::Play(source);
 
-	auto frontLeftSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Zombie.ogg", true);
+	auto frontLeftSource = Hez::Audio::AudioSource::LoadFromFile("Assets/Minecraft Zombie.ogg", true);
 	frontLeftSource.SetPosition(-5.f, 0.f, 5.f);
 
-	auto frontRightSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Spider.ogg", true);
+	auto frontRightSource = Hez::Audio::AudioSource::LoadFromFile("Assets/Minecraft Spider.ogg", true);
 	frontRightSource.SetPosition(5.f, 0.f, 5.f);
 
-	auto movingSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Footsteps.ogg", true);
+	auto movingSource = Hez::Audio::AudioSource::LoadFromFile("Assets/Minecraft Footsteps.ogg", true);
 	movingSource.SetPosition(5.f, 0.f, 5.f);
 
 	int sourceIndex = 0;
 	const int sourceCount = 3;
-	Hez::AudioSource* sources[] = { &frontLeftSource, &frontRightSource, &movingSource };
+	Hez::Audio::AudioSource* sources[] = { &frontLeftSource, &frontRightSource, &movingSource };
 
 	float xPosition = 5.f;
 	float playFrequency = 3.f; // play every 3 seconds
@@ -44,7 +44,7 @@ int main()
 		if (timer < 0.0f)
 		{
 			timer = playFrequency;
-			Hez::Audio::Play(*sources[sourceIndex++]);
+			Hez::Audio::Audio::Play(*sources[sourceIndex++]);
 		}
 
 		if (sourceIndex == 3)

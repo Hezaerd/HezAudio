@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-namespace Hez
+namespace Hez::Audio
 {
 	class AudioSource
 	{

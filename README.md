@@ -13,7 +13,7 @@ Hezaerd Audio is an audio library I made for my own projects, built on top of [O
 ## TODO
 - [ ] Add support for more formats (`.wav` in priority)
 - [ ] Unload audio sources from memory
-- [ ] Stream audio files
+- [ ] Stream audio files (for working play/pause/stop)
 - [ ] Listener positioning API
 - [ ] Effects ??
 
@@ -22,12 +22,12 @@ Check out the [demo](https://github.com/Hezaerd/HezAudio/tree/main/HezAudio-Demo
 
 ```cpp
 // Init the audio engine - bool is for debug mode
-Hez::Audio::Init(true);
+Hez::Audio::Audio::Init(true);
 // Load audio source from file - bool is for whether the
 // source should be in 3D space or not
-auto source = Hez::Audio::LoadAudioSource("Assets/effect.ogg", true);
+auto source = Hez::Audio::Audio::LoadAudioSource("Assets/effect.ogg", true);
 // Play the audio source
-Hez::Audio::Play(source);
+Hez::Audio::Audio::Play(source);
 ```
 and you can set various properties on the audio source as well:
 ```cpp

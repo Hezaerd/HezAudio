@@ -30,7 +30,7 @@ bool sDebug = false;
 
 #define HEZ_LOG(x) std::cout << "[HezAudio] " << x << std::endl
 
-namespace Hez
+namespace Hez::Audio
 {
 	static ALCdevice* sDevice = nullptr;
 	static mp3dec_t sMp3Decoder;
