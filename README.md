@@ -11,7 +11,7 @@ Hezaerd Audio is an audio library I made for my own projects, built on top of [O
 - 3D spatial playback
 
 ## TODO
-- [ ] Add support for more formats (`.wav` int priority)
+- [ ] Add support for more formats (`.wav` in priority)
 - [ ] Unload audio sources from memory
 - [ ] Stream audio files
 - [ ] Listener positioning API
