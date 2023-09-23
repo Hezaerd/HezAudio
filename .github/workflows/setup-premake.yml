@@ -1,8 +1,10 @@
-name: setup-premake
-run-name: ${{ github.actor }} is build the project using premake
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
-  Setup-Premake:
-    - uses: abel0b/setup-premake@v2.3
-    with:
-      version: "5.0.0-beta2"
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: abel0b/setup-premake@v2.3
+        with:
+          version: "5.0.0-beta2"
