@@ -41,4 +41,4 @@ source.SetLooping(true);
 ## Dependencies
 - [OpenAL Soft](https://openal-soft.org/)
 - [minimp3](https://github.com/lieff/minimp3)
-- [libogg & Vorbis](https://xiph.org/vorbis/)
+- [libogg & Vorbis](https://xiph.org/)
