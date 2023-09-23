@@ -21,6 +21,15 @@ namespace Hez
 		void SetLooping(bool pLooping);
 		void SetSpatial(bool pSpatial);
 
+		float GetPositionX() const { return mPosition[0]; }
+		float GetPositionY() const { return mPosition[1]; }
+		float GetPositionZ() const { return mPosition[2]; }
+		float GetGain() const { return mGain; }
+		float GetVolume() const { return mGain * 100.f; }
+		float GetPitch() const { return mPitch; }
+		bool IsLooping() const { return mIsLooping; }
+		bool IsSpatial() const { return mIsSpatial; }
+
 		std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
 		uint32_t GetLengthSeconds() const { return (uint32_t)mTotalDuration; }
 

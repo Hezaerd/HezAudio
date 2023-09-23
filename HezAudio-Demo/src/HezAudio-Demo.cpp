@@ -13,43 +13,55 @@ int main()
 	// Make it loop forever
 	source.SetLooping(true);
 	// Reduce the volume
-	source.SetVolume(0.05f);
+	source.SetVolume(1.f);
 	// Play the audio source
 	Hez::Audio::Play(source);
 
-	auto backSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Zombie.ogg", true);
-	backSource.SetPosition(-5.f, 0.f, 0.f);
-	Hez::Audio::Play(backSource);
+	auto frontLeftSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Zombie.ogg", true);
+	frontLeftSource.SetPosition(-5.f, 0.f, 5.f);
+
+	auto frontRightSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Spider.ogg", true);
+	frontRightSource.SetPosition(5.f, 0.f, 5.f);
 
 	auto movingSource = Hez::AudioSource::LoadFromFile("Assets/Minecraft Footsteps.ogg", true);
-	movingSource.SetPosition(5.f, 0.f, 0.f);
+	movingSource.SetPosition(5.f, 0.f, 5.f);
 
-	float xPosition = 10.f;
-	float playFrequency = movingSource.GetLengthSeconds(); // total duration of the source
+	int sourceIndex = 0;
+	const int sourceCount = 3;
+	Hez::AudioSource* sources[] = { &frontLeftSource, &frontRightSource, &movingSource };
+
+	float xPosition = 5.f;
+	float playFrequency = 3.f; // play every 3 seconds
 	float timer = playFrequency;
 
-	std::chrono::steady_clock::time_point last_time = std::chrono::steady_clock::now();
+	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
 	while (true)
 	{
 		std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-		std::chrono::duration<float> delta = currentTime - last_time;
-		last_time = currentTime;
+		std::chrono::duration<float> delta = currentTime - lastTime;
+		lastTime = currentTime;
 
 		if (timer < 0.0f)
 		{
 			timer = playFrequency;
-			Hez::Audio::Play(movingSource);
+			Hez::Audio::Play(*sources[sourceIndex++]);
 		}
 
-		if (xPosition < -10.f)
-			xPosition = 10.f;
+		if (sourceIndex == 3)
+		{
+			xPosition -= delta.count() * 2.f;
+			movingSource.SetPosition(xPosition, 0.f, 5.f);
 
-		movingSource.SetPosition(xPosition, 0.f, 0.f);
-		xPosition -= 0.1f * delta.count();
+			sourceIndex = 0;
+		}
+		else
+		{
+			xPosition = 5.f;
+		}
 
 		timer -= delta.count();
 
-		using namespace std::chrono_literals;
+		using namespace std::literals::chrono_literals;
 		std::this_thread::sleep_for(5ms);
 	}
 }

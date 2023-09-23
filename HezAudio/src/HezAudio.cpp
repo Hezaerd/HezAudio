@@ -256,8 +256,8 @@ namespace Hez
 	void AudioSource::SetPosition(float pX, float pY, float pZ)
 	{
 		mPosition[0] = pX;
-		mPosition[0] = pY;
-		mPosition[0] = pZ;
+		mPosition[1] = pY;
+		mPosition[2] = pZ;
 
 		alSourcefv(mSourceHandle, AL_POSITION, mPosition);
 	}
@@ -272,7 +272,7 @@ namespace Hez
 	void AudioSource::SetVolume(float pVolume)
 	{
 		// Just a wrapper for SetGain
-		SetGain(pVolume);
+		SetGain(pVolume / 100);
 	}
 
 	void AudioSource::SetPitch(float pPitch)
