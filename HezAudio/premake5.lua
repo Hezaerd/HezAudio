@@ -1,4 +1,5 @@
 project "HezAudio"
+    location "HezAudio"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"

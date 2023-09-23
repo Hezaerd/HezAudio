@@ -1,7 +1,7 @@
 include "dependencies.lua"
 
 workspace "HezAudio"
-    architecture "x64"
+    architecture "x86_64"
     startproject "HezAudio-Demo"
 
     configurations

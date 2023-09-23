@@ -15,7 +15,7 @@ project "HezAudio-Demo"
 
     includedirs
     {
-        "HezAudio/src",
+        "%{wks.location}/HezAudio/src"
     }
 
     links

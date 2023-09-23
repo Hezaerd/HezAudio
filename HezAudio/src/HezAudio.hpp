@@ -12,13 +12,13 @@ namespace Hez
 
 		static AudioSource LoadFromFile(const std::string& pFile, bool pIsSpatial = false);
 
-		bool isLoaded() const { return mIsLoaded; }
+		bool IsLoaded() const { return mIsLoaded; }
 
-		void setPosition(float pX, float pY, float pZ);
-		void setGain(float pGain);
-		void setPitch(float pPitch);
-		void setLooping(bool pLooping);
-		void setSpatial(bool pSpatial);
+		void SetPosition(float pX, float pY, float pZ);
+		void SetGain(float pGain);
+		void SetPitch(float pPitch);
+		void SetLooping(bool pLooping);
+		void SetSpatial(bool pSpatial);
 
 		std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
 
@@ -39,7 +39,7 @@ namespace Hez
 		float mPosition[3] = { 0.f, 0.f, 0.f };
 		float mGain = 1.f;
 		float mPitch = 1.f;
-		bool mLooping = false;
+		bool mIsLooping = false;
 
 		friend class Audio;
 	};
@@ -47,10 +47,13 @@ namespace Hez
 	class Audio
 	{
 	public:
-		static void Init();
+		static void Init(bool pDebugLogging);
 
 		static AudioSource LoadAudioSource(const std::string& filename);
+
 		static void Play(const AudioSource& pSource);
+		static void Pause(const AudioSource& pSource);
+		static void Stop(const AudioSource& pSource);
 
 	private:
 		static AudioSource LoadAudioSourceOgg(const std::string& filename);

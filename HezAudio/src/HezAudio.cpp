@@ -88,9 +88,9 @@ namespace Hez
 		if (sDebug)
 		{
 			HEZ_LOG("File info - " << pFilename << ":");
-			HEZ_LOG(" Channels: " << channels);
-			HEZ_LOG(" Sample rate: " << sampleRate);
-			HEZ_LOG(" Excepted Size" << bufferSize);
+			HEZ_LOG("Channels: " << channels);
+			HEZ_LOG("Sample rate: " << sampleRate);
+			HEZ_LOG("Excepted Size" << bufferSize);
 		}
 
 		if (sAudioScratchBufferSize < bufferSize)
@@ -163,17 +163,143 @@ namespace Hez
 		if (sDebug)
 		{
 			HEZ_LOG("File Info -" << pFilename << ":");
-			HEZ_LOG(" Channels: " << channels);
-			HEZ_LOG(" Sample Rate: " << sampleRate);
-			HEZ_LOG(" Size: " << size << " bytes");
+			HEZ_LOG("Channels: " << channels);
+			HEZ_LOG("Sample Rate: " << sampleRate);
+			HEZ_LOG("Size: " << size << " bytes");
 
 			auto [mins, secs] = result.GetLengthMinutesAndSeconds();
-			HEZ_LOG(" Length: " << mins << "m" << secs << "s");
+			HEZ_LOG("Length: " << mins << "m" << secs << "s");
 		}
 
 		if (alGetError() != AL_NO_ERROR)
 			std::cout << "Failed to setup sound source" << std::endl;
 
 		return result;
+	}
+
+	static void PrintAudioDeviceInfo()
+	{
+		if (sDebug)
+		{
+			HEZ_LOG("Audio device Info :");
+			HEZ_LOG("Name: " << sDevice->DeviceName);
+			HEZ_LOG("Sample Rate: " << sDevice->Frequency);
+			HEZ_LOG("Max Sources: " << sDevice->SourcesMax);
+			HEZ_LOG("Mono: " << sDevice->NumMonoSources);
+			HEZ_LOG("Stereo: " << sDevice->NumStereoSources);
+		}
+	}
+
+	void Audio::Init(bool pDebugLoggin)
+	{
+		if (InitAL(sDevice, nullptr, 0) != 0)
+			std::cout << "Audio device error!\n";
+
+		sDebug = pDebugLoggin;
+
+		// Debug Output
+		PrintAudioDeviceInfo();
+
+		mp3dec_init(&sMp3Decoder);
+
+		sAudioScratchBuffer = new uint8_t[sAudioScratchBufferSize];
+
+		// Set default listener values
+		ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
+		ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };
+		ALfloat listenerOri[] = { 0.0, 0.0, -1.0, 0.0, 1.0, 0.0 };
+		alListenerfv(AL_POSITION, listenerPos);
+		alListenerfv(AL_VELOCITY, listenerVel);
+		alListenerfv(AL_ORIENTATION, listenerOri);
+	}
+
+	AudioSource Audio::LoadAudioSource(const std::string& pFilename)
+	{
+		auto format = GetAudioFileFormat(pFilename);
+
+		switch (format)
+		{
+		case AudioFileFormat::Ogg: return LoadAudioSourceOgg(pFilename);
+		case AudioFileFormat::MP3: return LoadAudioSourceMp3(pFilename);
+			// TODO: Add support for other audio formats
+		}
+
+		// Loading failed || unsupported format
+		return { 0, false, 0.f };
+	}
+
+	void Audio::Play(const AudioSource& pAudioSource)
+	{
+		alSourcePlay(pAudioSource.mSourceHandle);
+	}
+
+	void Audio::Pause(const AudioSource& pAudioSource)
+	{
+		alSourcePause(pAudioSource.mSourceHandle);
+	}
+
+	void Audio::Stop(const AudioSource& pAudioSource)
+	{
+		alSourceStop(pAudioSource.mSourceHandle);
+	}
+
+	AudioSource::AudioSource(uint32_t pHandle, bool pLoaded, float pLength)
+		: mBufferHandle(pHandle), mIsLoaded(pLoaded), mTotalDuration(pLength)
+	{
+	}
+
+	AudioSource::~AudioSource()
+	{
+		// TODO: free OpenAL audio sources
+	}
+
+	void AudioSource::SetPosition(float pX, float pY, float pZ)
+	{
+		mPosition[0] = pX;
+		mPosition[0] = pY;
+		mPosition[0] = pZ;
+
+		alSourcefv(mSourceHandle, AL_POSITION, mPosition);
+	}
+
+	void AudioSource::SetGain(float pGain)
+	{
+		mGain = pGain;
+
+		alSourcef(mSourceHandle, AL_GAIN, pGain);
+	}
+
+	void AudioSource::SetPitch(float pPitch)
+	{
+		mPitch = pPitch;
+
+		alSourcef(mSourceHandle, AL_PITCH, pPitch);
+	}
+
+	void AudioSource::SetLooping(bool pLooping)
+	{
+		mIsLooping = pLooping;
+
+		alSourcei(mSourceHandle, AL_LOOPING, pLooping);
+	}
+
+	void AudioSource::SetSpatial(bool pSpatial)
+	{
+		mIsSpatial = pSpatial;
+
+		alSourcei(mSourceHandle, AL_SOURCE_SPATIALIZE_SOFT, pSpatial ? AL_TRUE : AL_FALSE);
+		alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+	}
+
+	std::pair<uint32_t, uint32_t> AudioSource::GetLengthMinutesAndSeconds() const
+	{
+		return { (uint32_t)(mTotalDuration / 60.f), (uint32_t)mTotalDuration % 60 };
+	}
+
+	AudioSource AudioSource::LoadFromFile(const std::string& pFilename, bool pSpatial)
+	{
+		AudioSource audioSource = Audio::LoadAudioSource(pFilename);
+		audioSource.SetSpatial(pSpatial);
+		return audioSource;
 	}
 }
