@@ -1,0 +1,8 @@
+name: setup-premake
+run-name: ${{ github.actor }} is build the project using premake
+on: [push]
+jobs:
+  Setup-Premake:
+    - uses: abel0b/setup-premake@v2.3
+    with:
+      version: "5.0.0-beta2"
