@@ -16,11 +16,13 @@ namespace Hez
 
 		void SetPosition(float pX, float pY, float pZ);
 		void SetGain(float pGain);
+		void SetVolume(float pVolume);
 		void SetPitch(float pPitch);
 		void SetLooping(bool pLooping);
 		void SetSpatial(bool pSpatial);
 
 		std::pair<uint32_t, uint32_t> GetLengthMinutesAndSeconds() const;
+		uint32_t GetLengthSeconds() const { return (uint32_t)mTotalDuration; }
 
 	private:
 		AudioSource() = default;

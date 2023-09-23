@@ -90,7 +90,7 @@ namespace Hez
 			HEZ_LOG("File info - " << pFilename << ":");
 			HEZ_LOG("Channels: " << channels);
 			HEZ_LOG("Sample rate: " << sampleRate);
-			HEZ_LOG("Excepted Size" << bufferSize);
+			HEZ_LOG("Excepted Size: " << bufferSize);
 		}
 
 		if (sAudioScratchBufferSize < bufferSize)
@@ -125,7 +125,7 @@ namespace Hez
 		uint32_t size = bufferPtr - oggBuffer;
 
 		if (sDebug)
-			std::cout << "[HezAudio] - Actual buffer size: " << size << " bytes\n";
+			HEZ_LOG("Actual buffer size: " << size << "\n");
 
 		ov_clear(&vorbisFile);
 		fclose(file);
@@ -150,7 +150,7 @@ namespace Hez
 		auto sampleRate = fileInfo.hz;
 		auto channels = fileInfo.channels;
 		auto alFormat = GetOpenALFormat(channels);
-		float trackDuration = size / (fileInfo.avg_bitrate_kbps * KILOBITS);
+		float trackDuration = size / (fileInfo.avg_bitrate_kbps * static_cast<float>(KILOBITS));
 
 		ALuint buffer;
 		alGenBuffers(1, &buffer);
@@ -168,7 +168,7 @@ namespace Hez
 			HEZ_LOG("Size: " << size << " bytes");
 
 			auto [mins, secs] = result.GetLengthMinutesAndSeconds();
-			HEZ_LOG("Length: " << mins << "m" << secs << "s");
+			HEZ_LOG("Length: " << mins << "m" << secs << "s\n");
 		}
 
 		if (alGetError() != AL_NO_ERROR)
@@ -186,7 +186,7 @@ namespace Hez
 			HEZ_LOG("Sample Rate: " << sDevice->Frequency);
 			HEZ_LOG("Max Sources: " << sDevice->SourcesMax);
 			HEZ_LOG("Mono: " << sDevice->NumMonoSources);
-			HEZ_LOG("Stereo: " << sDevice->NumStereoSources);
+			HEZ_LOG("Stereo: " << sDevice->NumStereoSources << "\n");
 		}
 	}
 
@@ -269,6 +269,12 @@ namespace Hez
 		alSourcef(mSourceHandle, AL_GAIN, pGain);
 	}
 
+	void AudioSource::SetVolume(float pVolume)
+	{
+		// Just a wrapper for SetGain
+		SetGain(pVolume);
+	}
+
 	void AudioSource::SetPitch(float pPitch)
 	{
 		mPitch = pPitch;
@@ -288,7 +294,7 @@ namespace Hez
 		mIsSpatial = pSpatial;
 
 		alSourcei(mSourceHandle, AL_SOURCE_SPATIALIZE_SOFT, pSpatial ? AL_TRUE : AL_FALSE);
-		alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+		alDistanceModel(AL_LINEAR_DISTANCE);
 	}
 
 	std::pair<uint32_t, uint32_t> AudioSource::GetLengthMinutesAndSeconds() const
