@@ -1,6 +1,6 @@
 # HezAudio
 
-Hezaerd Audio is an audio library I made for my own projects, built on top of [OpenAL Soft](https://openal-soft.org/). I've never written an audio library before so I figured I'd give it a shot, since I want a library that's easy to use and has a simple API. I'm not sure if I'll ever finish it, but I'll try my best.
+Hezaerd Audio is an audio library wich take place in my collection of [libraries](https://github.com/stars/Hezaerd/lists/hezaerd-s-libraries) that I made for my own projects , built on top of [OpenAL Soft](https://openal-soft.org/). I've never written an audio library before so I figured I'd give it a shot, since I want a library that's easy to use and has a simple API. I'm not sure if I'll ever finish it, but I'll try my best.
 
 ### Build status
 ![premake-setup](https://github.com/Hezaerd/HezAudio/actions/workflows/setup-premake.yml/badge.svg)
