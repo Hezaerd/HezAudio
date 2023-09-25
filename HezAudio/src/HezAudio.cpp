@@ -7,17 +7,24 @@
 #include <thread>
 #include <filesystem>
 
+#pragma warning(push, 0)
 #include "AL/al.h"
 #include "AL/alext.h"
 #include "alc/alcmain.h"
 #include "alhelpers.hpp"
+#pragma warning(pop)
 
 #define MINIMP3_IMPLEMENTATION
+#pragma warning(push, 0)
+#pragma warning(disable : 4706)
 #include "minimp3.h"
 #include "minimp3_ex.h"
+#pragma warning(pop)
 
+#pragma warning(push, 0)
 #include "vorbis/codec.h"
 #include "vorbis/vorbisfile.h"
+#pragma warning(pop)
 
 constexpr const unsigned int KILOBITS = 1024;
 constexpr const unsigned int MEGABITS = 1024 * KILOBITS;
@@ -122,7 +129,7 @@ namespace Hez::Audio
 			}
 		}
 
-		uint32_t size = bufferPtr - oggBuffer;
+		uint32_t size = static_cast<uint32_t>(bufferPtr - oggBuffer);
 
 		if (sDebug)
 			HEZ_LOG("Actual buffer size: " << size << "\n");
@@ -145,7 +152,13 @@ namespace Hez::Audio
 	{
 		mp3dec_file_info_t fileInfo = {};
 		int loadResult = mp3dec_load(&sMp3Decoder, pFilename.c_str(), &fileInfo, nullptr, nullptr);
-		uint32_t size = fileInfo.samples * sizeof(mp3d_sample_t);
+		if (loadResult != 0)
+		{
+			HEZ_LOG("Failed to load mp3 file: " << pFilename);
+			return AudioSource();
+		}
+
+		uint32_t size = static_cast<uint32_t>(fileInfo.samples) * sizeof(mp3d_sample_t);
 
 		auto sampleRate = fileInfo.hz;
 		auto channels = fileInfo.channels;
