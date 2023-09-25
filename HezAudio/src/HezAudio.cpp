@@ -26,8 +26,8 @@
 #include "vorbis/vorbisfile.h"
 #pragma warning(pop)
 
-constexpr const unsigned int KILOBITS = 1024;
-constexpr const unsigned int MEGABITS = 1024 * KILOBITS;
+#define KILOBITS 1024
+#define MEGABITS KILOBITS * KILOBITS
 
 #ifdef HEZ_DEBUG
 bool sDebug = true;
